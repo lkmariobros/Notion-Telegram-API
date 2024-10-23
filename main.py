@@ -78,12 +78,23 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if query.data.startswith('approve:'):
         item_id = query.data.split(':')[1]
-        success = await notion_handler.update_item_status(item_id, "Approved")
+        success = await notion_handler.update_item_status(item_id, "Scheduled")
         if success:
-            await query.edit_message_reply_markup(reply_markup=None)
-            await query.message.reply_text("Item approved successfully!")
+            # Get the original message's inline keyboard
+            original_keyboard = query.message.reply_markup.inline_keyboard
+            # Find the "View Full Content" button
+            view_content_button = next((button for row in original_keyboard for button in row if button.text == "View full content"), None)
+            
+            if view_content_button:
+                # Create a new keyboard with only the "View Full Content" button
+                new_keyboard = InlineKeyboardMarkup([[view_content_button]])
+                await query.edit_message_reply_markup(reply_markup=new_keyboard)
+            else:
+                await query.edit_message_reply_markup(reply_markup=None)
+            
+            await query.message.reply_text("Item scheduled successfully!")
         else:
-            await query.message.reply_text("Failed to approve item. Please try again later.")
+            await query.message.reply_text("Failed to schedule item. Please try again later.")
 
 async def get_chat_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"Your chat ID is: {update.effective_chat.id}")
