@@ -1,0 +1,13 @@
+{
+    "name": "notion-telegram-content-bot",
+    "private": true,
+    "scripts": {
+      "start": "python main.py",
+      "test": "python -m pytest"
+    },
+    "dependencies": {
+      "python-dotenv": "^1.0.0",
+      "notion-client": "^2.0.0",
+      "python-telegram-bot": "^20.7.0"
+    }
+  }
